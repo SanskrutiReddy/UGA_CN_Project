@@ -36,6 +36,37 @@ def encrypt_audio(audio):
 def decrypt_audio(encrypted_audio):
     return cipher_suite.decrypt(encrypted_audio)
 
+def start_audio_receiver():
+    audio_receiving_port = AudioReceiver(local_ip, 6666)
+    audio_receiving_port.start_server()
+
+def start_audio_sender():
+    audio_sender_port = AudioSender(receiver_ip, 6666)
+    audio_sender_port.audio_thread = True
+    audio_sender_port.audio_callback = lambda audio_frames: [encrypt_audio(audio_frame) for audio_frame in audio_frames]
+    audio_sender_port.start_stream()
+
+def start_video_receiver():
+    receiving = StreamingServer(local_ip, 9999)
+    receiving.start_server()
+
+def start_video_sender():
+    sending = CameraClient(receiver_ip, 9999)
+    time.sleep(5) # Wait for server to start
+    sending.start_stream()
+
+
+def start_audio_receiver_decrypt():
+    audio_receiving_port = AudioReceiver(local_ip, 7777)
+    audio_receiving_port.audio_thread = True
+    audio_receiving_port.audio_callback = lambda audio_frames: [decrypt_audio(audio_frame) for audio_frame in audio_frames]
+    audio_receiving_port.start_server()
+
+def start_audio_sender_decrypt():
+    audio_sender_port = AudioSender(receiver_ip, 7777)
+    audio_sender_port.start_stream()
+
+
 if __name__ == "__main__":
     isDestinationReacheable(receiver_ip)
     print(f'Your IP address is : {local_ip}')

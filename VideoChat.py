@@ -72,3 +72,30 @@ if __name__ == "__main__":
     print(f'Your IP address is : {local_ip}')
     print(f'Target IP address is : {receiver_ip}')
     print('Audio is being encrypted..')
+    
+    audio_receiver_process = multiprocessing.Process(target=start_audio_receiver)
+    audio_sender_process = multiprocessing.Process(target=start_audio_sender)
+    video_receiver_process = multiprocessing.Process(target=start_video_receiver)
+    video_sender_process = multiprocessing.Process(target=start_video_sender)
+    audio_receiver_decrypt_process = multiprocessing.Process(target=start_audio_receiver_decrypt)
+    audio_sender_decrypt_process = multiprocessing.Process(target=start_audio_sender_decrypt)
+    audio_receiver_process.start()
+    audio_sender_process.start()
+    video_receiver_process.start()
+    video_sender_process.start()
+    audio_receiver_decrypt_process.start()
+    audio_sender_decrypt_process.start()
+
+    while True:
+        if input("") != 'STOP':
+            print('connected')
+            continue
+        else:
+            break
+
+    audio_receiver_process.terminate()
+    audio_sender_process.terminate()
+    video_receiver_process.terminate()
+    video_sender_process.terminate()
+    audio_receiver_decrypt_process.terminate()
+    audio_sender_decrypt_process.terminate()
